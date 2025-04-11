@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriConsult - Sistema de Gestión Nutricional</title>
+    <!-- SweetAlert2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.3/sweetalert2.all.min.js"></script>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.0/chart.umd.min.js"></script>
+    <!-- FullCalendar -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/main.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/main.min.js"></script>
+    <!-- DataTables -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap5.min.css"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap5.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SheetJS (Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3FAA6E;
+            --secondary: #55B484;
+            --light: #E8F5E9;
+            --dark: #1E3A29;
+            --accent: #FFC107;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+        }
+
+        .sidebar {
+            background-color: var(--dark);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            transition: all 0.3s;
+        }
+
+        .sidebar a {
+            color: white;
+            padding: 15px;
+            display: block;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--secondary);
+        }
+
+        .sidebar a.active {
+            background-color: var(--secondary);
+            border-left: 4px solid var(--accent);
+        }
+
+        .sidebar .logo {
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-warning {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(63, 170, 110, 0.25);
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: var(--light);
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background-color: var(--primary);
+        }
+
+        .calendar-container {
+            height: 600px;
+        }
+
+        .dashboard-stats .card {
+            transition: all 0.3s;
+        }
+
+        .dashboard-stats .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-color: var(--primary) var(--primary) #fff;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--dark);
+        }
+
+        .motivation-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .motivation-quote {
+            font-size: 18px;
+            font-style: italic;
+        }
+
+        .progress-circular {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .progress-circular svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circular circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-dasharray: 339.292;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+        }
+
+        .progress-circular .bg {
+            stroke: #e0e0e0;
+        }
+
+        .progress-circular .progress {
+            stroke: var(--primary);
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .progress-circular .text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .meal-plan-card {
+            border-left: 4px solid var(--primary);
+        }
+
+        .meal-time {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .badge-dieta {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar .logo,
+            .sidebar .menu-text {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="logo.png" alt="">
+        </div>
+        <div class="menu">
+            <a href="#dashboard" class="active" id="dashboard-link"><i class="fas fa-tachometer-alt fa-fw me-2"></i>
+                <span class="menu-text">Dashboard</span></a>
+            <a href="#pacientes" id="pacientes-link"><i class="fas fa-users fa-fw me-2"></i> <span
+                    class="menu-text">Pacientes</span></a>
+            <a href="#citas" id="citas-link"><i class="fas fa-calendar-check fa-fw me-2"></i> <span
+                    class="menu-text">Citas</span></a>
+            <a href="#dietas" id="dietas-link"><i class="fas fa-utensils fa-fw me-2"></i> <span
+                    class="menu-text">Dietas</span></a>
+            <a href="#alimentos" id="alimentos-link"><i class="fas fa-carrot fa-fw me-2"></i> <span
+                    class="menu-text">Alimentos</span></a>
+            <a href="#pagos" id="pagos-link"><i class="fas fa-money-bill-wave fa-fw me-2"></i> <span
+                    class="menu-text">Pagos</span></a>
+            <a href="#reportes" id="reportes-link"><i class="fas fa-chart-bar fa-fw me-2"></i> <span
+                    class="menu-text">Reportes</span></a>
+            <a href="#configuracion" id="configuracion-link"><i class="fas fa-cog fa-fw me-2"></i> <span
+                    class="menu-text">Configuración</span></a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tachometer-alt me-2"></i> Dashboard</h2>
+                <div>
+                    <button class="btn btn-outline-success me-2" id="exportar-excel">
+                        <i class="fas fa-file-excel me-1"></i> Exportar Excel
+                    </button>
+                    <button class="btn btn-outline-danger me-2" id="exportar-pdf">
+                        <i class="fas fa-file-pdf me-1"></i> Exportar PDF
+                    </button>
+                    <button class="btn btn-warning" id="cerrar-jornada">
+                        <i class="fas fa-power-off me-1"></i> Cerrar Jornada
+                    </button>
+                </div>
+            </div>
+
+            <div class="row dashboard-stats mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Pacientes hoy</h5>
+                            <h2>12</h2>
+                            <p class="text-muted">3 nuevos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-success">Ingresos del día</h5>
+                            <h2>$5,400</h2>
+                            <p class="text-muted">+12% vs ayer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">Próxima cita</h5>
+                            <h2>15:30</h2>
+                            <p class="text-muted">Laura García</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">Dietas creadas</h5>
+                            <h2>8</h2>
+                            <p class="text-muted">Hoy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-day me-2"></i> Citas de hoy
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>09:00</td>
+                                        <td>Carlos Mendoza</td>
+                                        <td>Primera consulta</td>
+                                        <td><span class="badge bg-success">Completada</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success"><i
+                                                    class="fas fa-file-pdf"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10:30</td>
+                                        <td>María López</td>
+                                        <td>Seguimiento</td>
+                                        <td><span class="badge bg-success">Completada</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success"><i
+                                                    class="fas fa-file-pdf"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>12:00</td>
+                                        <td>Javier Sánchez</td>
+                                        <td>Evaluación mensual</td>
+                                        <td><span class="badge bg-success">Completada</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success"><i
+                                                    class="fas fa-file-pdf"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>14:00</td>
+                                        <td>Ana Martínez</td>
+                                        <td>Seguimiento</td>
+                                        <td><span class="badge bg-success">Completada</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success"><i
+                                                    class="fas fa-file-pdf"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>15:30</td>
+                                        <td>Laura García</td>
+                                        <td>Ajuste de dieta</td>
+                                        <td><span class="badge bg-warning text-dark">En espera</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-user-edit"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>17:00</td>
+                                        <td>Pedro Rodríguez</td>
+                                        <td>Primera consulta</td>
+                                        <td><span class="badge bg-info">Programada</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary"><i
+                                                    class="fas fa-user-edit"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-pie me-2"></i> Distribución de dietas
+                        </div>
+                        <div class="card-body">
+                            <canvas id="dietasChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="motivation-card mt-4">
+                        <h5><i class="fas fa-bolt me-2"></i> Motivación del día</h5>
+                        <p class="motivation-quote">"Cada pequeño cambio en tu alimentación es un gran paso hacia tu
+                            salud ideal."</p>
+                        <div class="text-end">
+                            <button class="btn btn-light btn-sm" id="share-motivation">
+                                <i class="fas fa-share-alt me-1"></i> Compartir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pacientes Section -->
+        <div id="pacientes" class="content-section" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-users me-2"></i> Gestión de Pacientes</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoClienteModal">
+                    <i class="fas fa-user-plus me-1"></i> Nuevo Paciente
+                </button>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-search me-2"></i> Buscar Pacientes
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-success btn-sm me-2">
+                                <i class="fas fa-file-excel me-1"></i> Excel
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm me-2">
+                                <i class="fas fa-file-pdf me-1"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Nombre">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option value="">Tipo de dieta</option>
+                                <option>Mediterránea</option>
+                                <option>Keto</option>
+                                <option>Vegetariana</option>
+                                <option>Vegana</option>
+                                <option>Paleo</option>
+                                <option>Sin gluten</option>
+                                <option>Baja en carbohidratos</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option value="">Estado</option>
+                                <option>Activo</option>
+                                <option>Inactivo</option>
+                                <option>Pendiente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped" id="tabla-pacientes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Tipo de Dieta</th>
+                                <th>IMC</th>
+                                <th>Próxima Cita</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>P001</td>
+                                <td>Carlos Mendoza</td>
+                                <td>32</td>
+                                <td><span class="badge badge-dieta">Mediterránea</span></td>
+                                <td>24.5</td>
+                                <td>22/04/2025</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P002</td>
+                                <td>María López</td>
+                                <td>28</td>
+                                <td><span class="badge badge-dieta">Vegetariana</span></td>
+                                <td>21.8</td>
+                                <td>18/04/2025</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P003</td>
+                                <td>Laura García</td>
+                                <td>45</td>
+                                <td><span class="badge badge-dieta">Sin gluten</span></td>
+                                <td>26.2</td>
+                                <td>Hoy, 15:30</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P004</td>
+                                <td>Javier Sánchez</td>
+                                <td>39</td>
+                                <td><span class="badge badge-dieta">Keto</span></td>
+                                <td>28.1</td>
+                                <td>21/04/2025</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>P005</td>
+                                <td>Ana Martínez</td>
+                                <td>42</td>
+                                <td><span class="badge badge-dieta">Baja en carbohidratos</span></td>
+                                <td>23.9</td>
+                                <td>25/04/2025</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-success"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Modal -->
+        <div class="modal fade" id="nuevoClienteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i> Nuevo Paciente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pacienteForm">
+                            <div class="mb-4">
+                                <h5 class="border-bottom pb-2"><i class="fas fa-info-circle me-2"></i> Datos Personales
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nombre completo *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Fecha de nacimiento *</label>
+                                        <input type="date" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Sexo *</label>
+                                        <select class="form-select" required>
+                                            <option value="">Seleccionar</option>
+                                            <option>Femenino</option>
+                                            <option>Masculino</option>
+                                            <option>Otro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Correo electrónico</label>
+                                        <input type="email" class="form-control">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Teléfono *</label>
+                                        <input type="tel" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Dirección</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="border-bottom pb-2"><i class="fas fa-heartbeat me-2"></i> Datos médicos</h5>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Peso (kg) *</label>
+                                        <input type="number" step="0.1" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Altura (cm) *</label>
+                                        <input type="number" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">IMC</label>
+                                        <input type="number" step="0.01" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Enfermedad de base</label>
+                                        <select class="form-select" multiple>
+                                            <option>Diabetes</option>
+                                            <option>Hipertensión</option>
+                                            <option>Hipotiroidismo</option>
+                                            <option>Hipertiroidismo</option>
+                                            <option>Enfermedad celíaca</option>
+                                            <option>Colesterol alto</option>
+                                            <option>Triglicéridos altos</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Alergias alimentarias</label>
+                                        <select class="form-select" multiple>
+                                            <option>Gluten</option>
+                                            <option>Lácteos</option>
+                                            <option>Mariscos</option>
+                                            <option>Frutos secos</option>
+                                            <option>Huevo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Observaciones médicas</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="border-bottom pb-2"><i class="fas fa-utensils me-2"></i> Información
+                                    Nutricional</h5>
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tipo de dieta *</label>
+                                        <select class="form-select" required>
+                                            <option value="">Seleccionar</option>
+                                            <option>Mediterránea</option>
+                                            <option>Keto</option>
+                                            <option>Vegetariana</option>
+                                            <option>Vegana</option>
+                                            <option>Paleo</option>
+                                            <option>Sin gluten</option>
+                                            <option>Baja en carbohidratos</option>
+                                            <option>Hipocalórica</option>
+                                            <option>Antiinflamatoria</option>
+                                            <option>DASH</option>
+                                            <option>Personalizada</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Objetivo *</label>
+                                        <select class="form-select" required>
+                                            <option value="">Seleccionar</option>
+                                            <option>Pérdida de peso</option>
+                                            <option>Ganancia de masa muscular</option>
+                                            <option>Mantenimiento</option>
+                                            <option>Control de enfermedad</option>
+                                            <option>Mejora del rendimiento deportivo</option>
+                                            <option>Salud general</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nivel de actividad física</label>
+                                        <select class="form-select">
+                                            <option value="">Seleccionar</option>
+                                            <option>Sedentario</option>
+                                            <option>Ligero (1-2 días/semana)</option>
+                                            <option>Moderado (3-4 días/semana)</option>
+                                            <option>Activo (5-6 días/semana)</option>
+                                            <option>Muy activo (diario/intenso)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Preferencias alimentarias</label>
+                                        <select class="form-select" multiple>
+                                            <option>Frutas</option>
+                                            <option>Verduras</option>
+                                            <option>Carnes rojas</option>
+                                            <option>Carnes blancas</option>
+                                            <option>Pescados y mariscos</option>
+                                            <option>Lácteos</option>
+                                            <option>Legumbres</option>
+                                            <option>Frutos secos</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="border-bottom pb-2"><i class="fas fa-file-medical me-2"></i> Consulta</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de consulta *</label>
+                                        <input type="date" class="form-control" required value="2025-04-11">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tipo de consulta *</label>
+                                        <select class="form-select" required>
+                                            <option value="">Seleccionar</option>
+                                            <option>Primera consulta</option>
+                                            <option>Seguimiento</option>
+                                            <option>Evaluación mensual</option>
+                                            <option>Ajuste de dieta</option>
+                                            <option>Consulta especial</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Forma de pago *</label>
+                                        <select class="form-select" required>
+                                            <option value="">Seleccionar</option>
+                                            <option>Efectivo</option>
+                                            <option>Tarjeta de crédito</option>
+                                            <option>Tarjeta de débito</option>
+                                            <option>Transferencia</option>
+                                            <option>Pago móvil</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Costo de consulta *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" required value="800">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Notas de la consulta</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-secondary me-2"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar paciente</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendario de Dietas -->
+        <div id="citas" class="content-section" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-calendar-check me-2"></i> Agenda de Citas</h2>
+                <div>
+                    <button class="btn btn-outline-primary me-2">
+                        <i class="fas fa-print me-1"></i> Imprimir agenda
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaCitaModal">
+                        <i class="fas fa-plus me-1"></i> Nueva cita
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-filter me-2"></i> Filtros
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Buscar paciente</label>
+                                <input type="text" class="form-control" placeholder="Nombre del paciente">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de consulta</label>
+                                <select class="form-select">
+                                    <option value="">Todos</option>
+                                    <option>Primera consulta</option>
+                                    <option>Seguimiento</option>
+                                    <option>Evaluación mensual</option>
+                                    <option>Ajuste de dieta</option>
+                                    <option>Consulta especial</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select class="form-select">
+                                    <option value="">Todos</option>
+                                    <option>Programada</option>
+                                    <option>Confirmada</option>
+                                    <option>En espera</option>
+                                    <option>Completada</option>
+                                    <option>Cancelada</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Aplicar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-bell me-2"></i> Próximas citas
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>15:30 - <strong>Laura García</strong></div>
+                                        <span class="badge bg-warning text-dark">En espera</span>
+                                    </div>
+                                    <small class="text-muted">Ajuste de dieta</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>17:00 - <strong>Pedro Rodríguez</strong></div>
+                                        <span class="badge bg-info">Programada</span>
+                                    </div>
+                                    <small class="text-muted">Primera consulta</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>Mañana, 09:30 - <strong>Isabel Torres</strong></div>
+                                        <span class="badge bg-info">Programada</span>
+                                    </div>
+                                    <small class="text-muted">Seguimiento</small>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>Mañana, 11:00 - <strong>Roberto Díaz</strong></div>
+                                        <span class="badge bg-success">Confirmada</span>
+                                    </div>
+                                    <small class="text-muted">Evaluación mensual</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-alt me-2"></i> Calendario
+                        </div>
+                        <div class="card-body">
+                            <div id="calendar" class="calendar-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Nueva Cita -->
+            <div class="modal fade" id="nuevaCitaModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i> Nueva Cita</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Paciente *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Seleccionar paciente</option>
+                                        <option>Laura García</option>
+                                        <option>Carlos Mendoza</option>
+                                        <option>María López</option>
+                                        <option>Javier Sánchez</option>
+                                        <option>Ana Martínez</option>
+                                        <option>Pedro Rodríguez</option>
+                                        <option>Isabel Torres</option>
+                                        <option>Roberto Díaz</option>
+                                        <option>[Nuevo paciente]</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha *</label>
+                                        <input type="date" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Hora *</label>
+                                        <input type="time" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de consulta *</label>
+                                    <select class="form-select" required>
+                                        <option value="">Seleccionar</option>
+                                        <option>Primera consulta</option>
+                                        <option>Seguimiento</option>
+                                        <option>Evaluación mensual</option>
+                                        <option>Ajuste de dieta</option>
+                                        <option>Consulta especial</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Duración</label>
+                                    <select class="form-select">
+                                        <option>30 minutos</option>
+                                        <option selected>45 minutos</option>
+                                        <option>60 minutos</option>
+                                        <option>90 minutos</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Notas</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="notificarCheck">
+                                    <label class="form-check-label" for="notificarCheck">Enviar recordatorio por
+                                        email/SMS</label>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary me-2"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Agendar cita</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dietas Section -->
+        <div id="dietas" class="content-section" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-utensils me-2"></i> Planes de Alimentación</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaDietaModal">
+                    <i class="fas fa-plus me-1"></i> Nueva Dieta
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-search me-2"></i> Buscar Dietas
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Paciente</label>
+                                <select class="form-select">
+                                    <option value="">Todos los pacientes</option>
+                                    <option>Laura García</option>
+                                    <option>Carlos Mendoza</option>
+                                    <option>María López</option>
+                                    <option>Javier Sánchez</option>
+                                    <option>Ana Martínez</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de dieta</label>
+                                <select class="form-select">
+                                    <option value="">Todos los tipos</option>
+                                    <option>Mediterránea</option>
+                                    <option>Keto</option>
+                                    <option>Vegetariana</option>
+                                    <option>Vegana</option>
+                                    <option>Paleo</option>
+                                    <option>Sin gluten</option>
+                                    <option>Baja en carbohidratos</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Objetivo</label>
+                                <select class="form-select">
+                                    <option value="">Todos</option>
+                                    <option>Pérdida de peso</option>
+                                    <option>Ganancia de masa muscular</option>
+                                    <option>Mantenimiento</option>
+                                    <option>Control de enfermedad</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary w-100">
+                                <i class="fas fa-search me-1"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line me-2"></i> Estadísticas
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-center mb-3">
+                                <div class="progress-circular">
+                                    <svg width="120" height="120">
+                                        <circle class="bg" cx="60" cy="60" r="54" />
+                                        <circle class="progress" cx="60" cy="60" r="54"
+                                            style="stroke-dashoffset: 101.7876;" />
+                                    </svg>
+                                    <div class="text">70%</div>
+                                </div>
+                            </div>
+                            <p class="text-center">Adherencia promedio a las dietas</p>
+                            <hr>
+                            <h6>Dietas más populares:</h6>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Mediterránea</span>
+                                    <span>35%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 35%" aria-valuenow="35"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Baja en carbohidratos</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Vegetariana</span>
+                                    <span>18%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 18%" aria-valuenow="18"
+                                        aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div><i class="fas fa-clipboard-list me-2"></i> Planes Alimenticios</div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-success me-2">
+                                    <i class="fas fa-file-excel me-1"></i> Excel
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-file-pdf me-1"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="nav nav-tabs mb-3" id="dietasTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="actuales-tab" data-bs-toggle="tab"
+                                        data-bs-target="#actuales" type="button" role="tab" aria-controls="actuales"
+                                        aria-selected="true">Dietas actuales</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="historico-tab" data-bs-toggle="tab"
+                                        data-bs-target="#historico" type="button" role="tab" aria-controls="historico"
+                                        aria-selected="false">Histórico</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="plantillas-tab" data-bs-toggle="tab"
+                                        data-bs-target="#plantillas" type="button" role="tab" aria-controls="plantillas"
+                                        aria-selected="false">Plantillas</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="dietasTabsContent">
+                                <div class="tab-pane fade show active" id="actuales" role="tabpanel"
+                                    aria-labelledby="actuales-tab">
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item list-group-item-action meal-plan-card">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">Dieta Mediterránea - Carlos Mendoza</h5>
+                                                <small>Creada: 05/04/2025</small>
+                                            </div>
+                                            <p class="mb-1">Plan equilibrado con énfasis en grasas saludables. Objetivo:
+                                                pérdida de peso moderada.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small>Calorías: 1,800 kcal/día</small>
+                                                <div>
+                                                    <span class="badge bg-success me-1">Activa</span>
+                                                    <span class="badge bg-info">Semana 2/8</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action meal-plan-card">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">Dieta Vegetariana - María López</h5>
+                                                <small>Creada: 23/03/2025</small>
+                                            </div>
+                                            <p class="mb-1">Plan basado en vegetales con suplementación de B12.
+                                                Objetivo: mantenimiento y salud general.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small>Calorías: 2,000 kcal/día</small>
+                                                <div>
+                                                    <span class="badge bg-success me-1">Activa</span>
+                                                    <span class="badge bg-info">Semana 3/12</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action meal-plan-card">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">Dieta Sin Gluten - Laura García</h5>
+                                                <small>Creada: 11/04/2025</small>
+                                            </div>
+                                            <p class="mb-1">Plan especializado para enfermedad celíaca. Objetivo:
+                                                control de enfermedad.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small>Calorías: 1,950 kcal/día</small>
+                                                <div>
+                                                    <span class="badge bg-success me-1">Activa</span>
+                                                    <span class="badge bg-info">Semana 1/12</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action meal-plan-card">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">Dieta Keto - Javier Sánchez</h5>
+                                                <small>Creada: 28/03/2025</small>
+                                            </div>
+                                            <p class="mb-1">Plan alto en grasas y bajo en carbohidratos. Objetivo:
+                                                pérdida de peso acelerada.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small>Calorías: 2,200 kcal/día</small>
+                                                <div>
+                                                    <span class="badge bg-success me-1">Activa</span>
+                                                    <span class="badge bg-info">Semana 2/6</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item list-group-item-action meal-plan-card">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">Dieta Baja en Carbohidratos - Ana Martínez</h5>
+                                                <small>Creada: 01/04/2025</small>
+                                            </div>
+                                            <p class="mb-1">Plan enfocado en reducción moderada de carbohidratos.
+                                                Objetivo: control de diabetes tipo 2.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small>Calorías: 1,700 kcal/día</small>
+                                                <div>
+                                                    <span class="badge bg-success me-1">Activa</span>
+                                                    <span class="badge bg-info">Semana 2/16</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="historico" role="tabpanel"
+                                    aria-labelledby="historico-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Paciente</th>
+                                                    <th>Tipo</th>
+                                                    <th>Fecha inicio</th>
+                                                    <th>Fecha fin</th>
+                                                    <th>Resultado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>D035</td>
+                                                    <td>Carlos Mendoza</td>
+                                                    <td>Hipocalórica</td>
+                                                    <td>15/01/2025</td>
+                                                    <td>05/04/2025</td>
+                                                    <td><span class="badge bg-success">-8kg</span></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary"><i
+                                                                class="fas fa-eye"></i></button>
+                                                        <button class="btn btn-sm btn-outline-success"><i
+                                                                class="fas fa-file-pdf"></i></button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>D029</td>
+                                                    <td>María López</td>
+                                                    <td>Paleo</td>
+                                                    <td>10/12/2024</td>
+                                                    <td>23/03/2025</td>
+                                                    <td><span class="badge bg-success">-5kg</span></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary"><i
+                                                                class="fas fa-eye"></i></button>
+                                                        <button class="btn btn-sm btn-outline-success"><i
+                                                                class="fas fa-file-pdf"></i></button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>D022</td>
+                                                    <td>Pedro Rodríguez</td>
+                                                    <td>Ganancia muscular</td>
+                                                    <td>05/11/2024</td>
+                                                    <td>15/03/2025</td>
+                                                    <td><span class="badge bg-primary">+4kg músculo</span></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary"><i
+                                                                class="fas fa-eye"></i></button>
+                                                        <button class="btn btn-sm btn-outline-success"><i
+                                                                class="fas fa-file-pdf"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="plantillas" role="tabpanel"
+                                    aria-labelledby="plantillas-tab">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card h-100">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Mediterránea estándar</h5>
+                                                    <p class="card-text">Dieta equilibrada basada en aceite de oliva,
+                                                        pescado, frutas
